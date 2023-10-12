@@ -10,7 +10,14 @@ def home(request):
 
 
 def onboarding(request):
-   return render(request, 'onboarding/index.html')
+   context = {}
+   gender = {
+      'male': 'Male',
+      'female': 'Female',
+   }
+   context['gender'] = gender
+   print(gender)
+   return render(request, 'onboarding/index.html', context)
 
 
 
