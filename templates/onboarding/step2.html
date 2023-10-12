@@ -1,7 +1,158 @@
 {% block content %}
-<div class="">
-  <h1>
-    Step 2
-  </h1>
+
+<div class="max-w-md mx-auto p-6 bg-gradient-to-r from-blue-300 to-blue-200 rounded-lg shadow-md">
+  <h1 class="text-2xl font-semibold text-white mb-6">Job Application Form</h1>
+  <form>
+    <!-- Job Profile Title -->
+    <div class="mb-4">
+      <label for="job_title" class="text-white text-sm">Job Profile</label>
+      <input
+        type="text"
+        id="job_title"
+        name="job_title"
+        class="bg-gray-100 text-gray-800 w-full py-2 px-4 rounded-full focus:outline-none focus:ring focus:ring-blue-400"
+        placeholder="Software Engineer"
+        required
+      />
+    </div>
+
+    <!-- Years of Experience -->
+    <div class="mb-4">
+      <label for="experience" class="text-white text-sm">Years of Experience</label>
+      <input
+        type="number"
+        id="experience"
+        name="experience"
+        class="bg-gray-100 text-gray-800 w-full py-2 px-4 rounded-full focus:outline-none focus:ring focus:ring-blue-400"
+        placeholder="5"
+        required
+      />
+    </div>
+
+    <!-- Main Technologies -->
+    <div class="mb-4">
+      <label for="main_technologies" class="text-white text-sm">Main Technologies</label>
+      <input
+        type="text"
+        id="main_technologies"
+        name="main_technologies"
+        class="bg-gray-100 text-gray-800 w-full py-2 px-4 rounded-full focus:outline-none focus:ring focus:ring-blue-400"
+        placeholder="JavaScript, Python, Java"
+        required
+      />
+    </div>
+
+    <!-- Secondary Technologies -->
+    <div class="mb-4">
+      <label for="secondary_technologies" class="text-white text-sm">Secondary Technologies</label>
+      <input
+        type="text"
+        id="secondary_technologies"
+        name="secondary_technologies"
+        class="bg-gray-100 text-gray-800 w-full py-2 px-4 rounded-full focus:outline-none focus:ring focus:ring-blue-400"
+        placeholder="React, Spring, SQL"
+        required
+      />
+    </div>
+
+    <div class="mt-6">
+      <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded-full hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-400">Submit</button>
+    </div>
+  </form>
 </div>
+
+<div class="max-w-md mx-auto p-6 bg-white rounded-md shadow-md">
+  <h1 class="text-2xl font-semibold text-gray-800 mb-6">Tags Input Box</h1>
+  <form id="tags-form">
+    <!-- Tags Input Box -->
+    <div class="mb-4">
+      <label for="tags" class="block text-gray-700 text-sm font-bold mb-2">Tags</label>
+      <div class="flex flex-wrap space-x-2" id="tags-container">
+        <!-- Tags will be added here using JavaScript -->
+      </div>
+      <input type="text" id="tags-input" class="px-4 py-2 border rounded-md w-full focus:outline-none focus:border-blue-400" placeholder="Add tags and press Enter" />
+      <input type="hidden" name="tags" id="tags-hidden" value="" />
+    </div>
+    <div>
+      <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">Get Started</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const tagsContainer = document.getElementById('tags-container');
+    const tagsInput = document.getElementById('tags-input');
+    const tagsHiddenInput = document.getElementById('tags-hidden');
+
+    const tagsList = []; // Initialize an empty list for tags
+
+    tagsInput.addEventListener('keydown', function (event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+
+        const tagText = tagsInput.value.trim();
+
+        if (tagText) {
+          const tagElement = document.createElement('span');
+          tagElement.textContent = tagText;
+          tagElement.classList.add('bg-blue-400', 'text-white', 'px-2', 'py-1', 'rounded-md', 'mr-2', 'mb-2');
+
+          tagsContainer.appendChild(tagElement);
+
+          // Add the tag to the list
+          tagsList.push(tagText);
+
+          // Update hidden input with the list of tags
+          tagsHiddenInput.value = JSON.stringify(tagsList);
+
+          tagsInput.value = '';
+        }
+      }
+    });
+
+    tagsContainer.addEventListener('click', function (event) {
+      if (event.target.tagName === 'SPAN') {
+        const tagText = event.target.textContent;
+
+        // Remove the tag from the list
+        tagsList.splice(tagsList.indexOf(tagText), 1);
+
+        event.target.remove();
+
+        // Update hidden input with the updated list of tags
+        tagsHiddenInput.value = JSON.stringify(tagsList);
+      }
+    });
+
+    const tagsForm = document.getElementById('tags-form');
+
+    tagsForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      // Send the list of tags as a JSON array in the request
+      const formData = new FormData(tagsForm);
+      const tags = JSON.parse(tagsHiddenInput.value);
+
+      formData.set('tags', JSON.stringify(tags));
+
+      // Perform your AJAX request or form submission here
+      console.log(tags);
+
+      // Reset the tags list and hidden input
+      tagsList.length = 0;
+      tagsHiddenInput.value = '';
+
+      // Clear the displayed tags
+      tagsContainer.innerHTML = '';
+
+      // You can submit the form or make an AJAX request here
+      // Example:
+      // fetch("/your-api-endpoint", {
+      //   method: "POST",
+      //   body: formData,
+      // });
+    });
+  });
+</script>
 {% endblock %}
