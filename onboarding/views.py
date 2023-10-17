@@ -1,25 +1,20 @@
 from django.shortcuts import render
+from django.http import HttpResponse
+from .forms import UserInfo, JobInfo, Skills
+from formtools.wizard.views import SessionWizardView
 
+class ContactWizard(SessionWizardView):
+   form_list = [UserInfo, JobInfo, Skills]
+   template_name = 'onboarding/index.html'
+   
+   def done(self, form_list, **kwargs):
+      user_info   = form_list[0].save()
+      job_info    = form_list[1].save()
+      skills      = form_list[2].save()
+      
+      return HttpResponse('Form Submitted !')
+        
 def home(request):
    context = {}
 
-   test = 'hello world'
-   context['test'] = test
    return render(request, 'app/home.html', context)
-
-
-
-def onboarding(request):
-   context = {}
-   gender = {
-      'male': 'Male',
-      'female': 'Female',
-   }
-   context['gender'] = gender
-   print(gender)
-   return render(request, 'onboarding/index.html', context)
-
-
-
-def onboardingStep(request, step):
-   return render(request, f'onboarding/step{step}.html')
